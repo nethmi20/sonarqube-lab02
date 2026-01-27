@@ -2,38 +2,40 @@ package main.java.com.example;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class UserService {
 
+    // SECURITY ISSUE: Hardcoded credentials
     private String password = "admin123";
 
-    public ResultSet findUser(String username) throws Exception {
-        Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost/db",
-                "root",
-                password
-        );
+    // VULNERABILITY: SQL Injection
+    public void findUser(String username) throws Exception {
 
-        String query = "SELECT * FROM users WHERE name = ?";
-        PreparedStatement pst = conn.prepareStatement(query);
-        pst.setString(1, username);
+        Connection conn =
+            DriverManager.getConnection("jdbc:mysql://localhost/db",
+                    "root", password);
 
-        return pst.executeQuery();
+        Statement st = conn.createStatement();
+
+        String query =
+            "SELECT * FROM users WHERE name = '" + username + "'";
+
+        st.executeQuery(query);
     }
 
-    public void deleteUser(String username) throws Exception {
-        Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost/db",
-                "root",
-                password
-        );
-
-        String query = "DELETE FROM users WHERE name = ?";
-        PreparedStatement pst = conn.prepareStatement(query);
-        pst.setString(1, username);
-
-        pst.executeUpdate();
+    // SMELL: Unused method
+    public void notUsed() {
+        System.out.println("I am never called");
     }
+   public void deleteUser(String username) throws Exception {
+    String url = "jdbc:mysql://localhost/db";
+    try (Connection conn = DriverManager.getConnection(url, "root", password);
+         PreparedStatement pstmt = conn.prepareStatement("DELETE FROM users WHERE name = ?")) {
+        
+        pstmt.setString(1, username);
+        pstmt.execute();
+    }
+}
+
 }

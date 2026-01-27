@@ -1,27 +1,38 @@
 package main.java.com.example;
 
 public class Calculator {
-
+    
     public int calculate(int a, int b, String op) {
-        switch (op) {
+        switch(op) {
             case "add":
+            case "add-again":
                 return a + b;
+            
             case "sub":
+            case "sub-again":
                 return a - b;
+            
             case "mul":
                 return a * b;
+            
             case "div":
-                return b != 0 ? a / b : 0;
-            case "mod":
-                return a % b;
-            case "pow":
-                int result = 1;
-                for (int i = 0; i < b; i++) {
-                    result *= a;
+                if(b == 0) {
+                    throw new ArithmeticException("Division by zero");
                 }
-                return result;
+                return a / b;
+            
+            case "mod":
+                if(b == 0) {
+                    throw new ArithmeticException("Modulo by zero");
+                }
+                return a % b;
+            
+            case "pow":
+                return (int) Math.pow(a, b);
+            
             default:
-                return 0;
+                throw new IllegalArgumentException("Invalid operation: " + op);
         }
     }
+   
 }
