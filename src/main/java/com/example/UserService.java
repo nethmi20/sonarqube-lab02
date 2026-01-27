@@ -2,42 +2,32 @@ package main.java.com.example;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class UserService {
 
-    // SECURITY ISSUE: Hardcoded credentials
-    private String password = "admin123";
+    private String password = "admin123"; // kept for lab simplicity
 
-    // VULNERABILITY: SQL Injection
-    public void findUser(String username) throws Exception {
+    // SAFE: Look up user using PreparedStatement to prevent SQL Injection
+    public ResultSet findUser(String username) throws Exception {
         Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost/db",
-            "root", password
+            "jdbc:mysql://localhost/db", "root", password
         );
-
-        Statement st = conn.createStatement();
-
-        String query = "SELECT * FROM users WHERE name = '" + username + "'";
-        st.executeQuery(query);
+        String query = "SELECT * FROM users WHERE name = ?";
+        PreparedStatement pst = conn.prepareStatement(query);
+        pst.setString(1, username);
+        return pst.executeQuery();
     }
 
-    // SMELL: Unused method
-    public void notUsed() {
-        System.out.println("I am never called");
-    }
-
-    // VULNERABILITY: SQL Injection / dangerous operation
+    // SAFE: Delete user using PreparedStatement to prevent SQL Injection
     public void deleteUser(String username) throws Exception {
         Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost/db",
-            "root", password
+            "jdbc:mysql://localhost/db", "root", password
         );
-
-        Statement st = conn.createStatement();
-
-        String query = "DELETE FROM users WHERE name = '" + username + "'";
-        st.execute(query);
+        String query = "DELETE FROM users WHERE name = ?";
+        PreparedStatement pst = conn.prepareStatement(query);
+        pst.setString(1, username);
+        pst.executeUpdate();
     }
-
 }
