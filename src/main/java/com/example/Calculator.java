@@ -4,12 +4,10 @@ public class Calculator {
     
     public int calculate(int a, int b, String op) {
         switch(op) {
-            case "add":
-            case "add-again":
+            case "add", "add-again":  // FIXED: Merged cases with comma
                 return a + b;
             
-            case "sub":
-            case "sub-again":
+            case "sub", "sub-again":  // FIXED: Merged cases with comma
                 return a - b;
             
             case "mul":
@@ -34,5 +32,4 @@ public class Calculator {
                 throw new IllegalArgumentException("Invalid operation: " + op);
         }
     }
-   
 }
