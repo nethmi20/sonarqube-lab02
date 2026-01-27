@@ -2,7 +2,6 @@ package main.java.com.example;
 
 public class Calculator {
 
-    // Clean method with no duplication or complex code
     public int calculate(int a, int b, String op) {
         switch (op) {
             case "add":
@@ -25,5 +24,4 @@ public class Calculator {
                 return 0;
         }
     }
-
 }
